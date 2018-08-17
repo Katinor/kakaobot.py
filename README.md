@@ -11,13 +11,13 @@ Flask를 통해 구현되어 있습니다.
 - [Installation](#installation)
 - [Example](#example)
 - [Usage](#usage)
-  - [Basic structure](#Basic structure)
-  - [Class](#Class)
-    - [Client](#Client)
-	- [Kboard](#Kboard)
-	- [Message](#Message)
-	- [Mbutton](#Mbutton)
-	- [Photo](#Photo)
+  - [Basic structure](#basic-structure)
+  - [Class](#class)
+    - [Client](#client)
+	- [Kboard](#kboard)
+	- [Message](#message)
+	- [Mbutton](#mbutton)
+	- [Photo](#photo)
 
 ## Installation
 
