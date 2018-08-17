@@ -84,31 +84,51 @@ kakaobot.py는 Client를 선언하고 Client.run()을 통해 챗봇을 활성화
 | ---- | ---- | -------- | ----------- |
 | port | int | Optional | 카카오톡 플러스친구 API와 통신할 웹서버의 포트번호입니다. 생략시 Flask의 기본 포트번호인 5000이 적용됩니다. |
 | kboard | [Kboard](#Kboard) | Optional | 챗봇 사용자가 처음으로 이 챗봇의 채팅방에 들어올 때 적용되는 Kboard입니다. 생략시 빈 Kboard 가 적용됩니다. |
-| kboard | string | Optional | 사용자가 챗봇에게 전달한 메시지가 커맨드에 등록되어있지 않고, 별도의 처리가 없을 경우 사용자에게 전달되는 메시지입니다. 생략시 "Error occured" 라고 챗봇이 말합니다. |
+| kboard | [Message](#message) | Optional | 사용자가 챗봇에게 전달한 메시지가 커맨드에 등록되어있지 않고, 별도의 처리가 없을 경우 사용자에게 전달되는 메시지입니다. 생략시 "Error occured" 라고 챗봇이 말합니다. |
+
+##### 명령어 등록시의 주의점
+
+모든 명령어 등록 데코레이터에 등록되는 함수는 정해진 숫자의 매개변수를 필요로 합니다.
+그 함수에 전달되는 매개변수중 첫번째는 언제나 `사용자의 고유 토큰값` 이며, 나머지는 함수 소개부분에 설명해두었습니다.
+`사용자의 고유 토큰값`은 주식회사 카카오 측에서 제공하는 정보입니다. 같은 사용자라도 다른 플러스친구라면 값이 달라지기 때문에, 토큰값이 이전의 사용자와 동일인임을 보장할 수는 있지만, 개인으로 특정하는데 사용할 수는 없습니다. [user_key에 대한 설명]을 확인하세요.
 
 ##### `add_command()`
 
 명령어를 등록하기 위한 데코레이터입니다. 반드시 [Message](#Message) 객체를 반환해야만 합니다.
 데코레이터의 대상이 되는 `함수의 이름`이 명령어가 됩니다.
 이 데코레이터로 등록된 함수는 사용자가 `명령어를 정확히 말했을 때` 동작합니다.
-이 데코레이터로 등록된 함수는 `매개변수가 없어야 합니다.`
+이 데코레이터로 등록된 함수는 `하나의 매개변수를 필요로 합니다.`
 
 ```py
 @app.add_command
-def 안녕(): # 챗봇이 "안녕" 이라는 말을 들을 경우
+def 안녕(user_key): # 챗봇이 "안녕" 이라는 말을 들을 경우
 	return kakaobot.Message(text = "반가워") # "반가워" 라고 답합니다.
 ```
+
+##### `add_alias_command()`
+
+명령어를 등록하기 위한 데코레이터입니다. 반드시 [Message](#Message) 객체를 반환해야만 합니다.
+데코레이터로 전달된 배열의 인자들이 명령어가 됩니다.
+이 데코레이터로 등록된 함수는 사용자가 `명령어중 하나를 정확히 말했을 때` 동작합니다.
+이 데코레이터로 등록된 함수는 `하나의 매개변수를 필요로 합니다.`
+
+```py
+@app.add_alias_command(["안녕","반가워"])
+def greeting(user_key):
+	return kakaobot.Message(text = "나도 반가워!")
+```
+
 ##### `add_prefix_command()`
 
 명령어를 등록하기 위한 데코레이터입니다. 반드시 [Message](#Message) 객체를 반환해야만 합니다.
 데코레이터의 대상이 되는 `함수의 이름`이 명령어가 됩니다.
 이 데코레이터로 등록된 함수는 사용자가 `명령어를 첫 어절로 말했을 때` 동작합니다.
-이 데코레이터로 등록된 함수는 `하나의 매개변수를 필요로 합니다.`
+이 데코레이터로 등록된 함수는 `두 개의 매개변수를 필요로 합니다.`
 
-명령어 부분이 잘린 문자열이 매개변수로 들어가게 됩니다. 예시는 다음과 같습니다.
+명령어 부분이 잘린 문자열이 두 번째 매개변수로 들어가게 됩니다. 예시는 다음과 같습니다.
 ```py
 @app.add_prefix_command
-def 따라해(content):
+def 따라해(user_key,content):
 	return kakaobot.Message(text = content)
 ```
 이 경우 "따라해"가 채팅의 첫 단어일 때 동작합니다. 그리고 "따라해"를 제외한 내용이 매개변수로 들어옵니다.
@@ -121,12 +141,12 @@ def 따라해(content):
 명령어를 등록하기 위한 데코레이터입니다. 반드시 [Message](#Message) 객체를 반환해야만 합니다.
 데코레이터로 전달된 `정규식 표현`이 명령어가 됩니다.
 이 데코레이터로 등록된 함수는 사용자가 `명령어의 패턴을 만족하도록 말했을 때` 동작합니다.
-이 데코레이터로 등록된 함수는 `하나의 매개변수를 필요로 합니다.`
+이 데코레이터로 등록된 함수는 `두 개의 매개변수를 필요로 합니다.`
 
-정규식 표현에 의해 잘린 부분이 매개변수로 들어가게 됩니다. 예시는 다음과 같습니다.
+정규식 표현에 의해 잘린 부분이 두 번째 매개변수로 들어가게 됩니다. 예시는 다음과 같습니다.
 ```py
 @app.add_regex_command('^(?:((?:(?!에서).)*)에서 )?((?:(?! 찾아줘).)*) 찾아줘')
-def temp_regex_com(content):
+def temp_regex_com(user_key,content):
 	return kakaobot.Message(text = "반가워")
 ```
 이 경우 매개변수로 들어가는 내용은 2개의 원소를 가진 배열이 됩니다.
@@ -137,12 +157,12 @@ def temp_regex_com(content):
 
 명령어를 등록하기 위한 데코레이터입니다. 반드시 [Message](#Message) 객체를 반환해야만 합니다.
 이 데코레이터로 등록된 함수는 사용자가 `위의 세 데코레이터로 등록되지 않은 말을 했을 때` 동작합니다.
-이 데코레이터로 등록된 함수는 `하나의 매개변수를 필요로 합니다.`
+이 데코레이터로 등록된 함수는 `두 개의 매개변수를 필요로 합니다.`
 
-사용자가 한 말이 그대로 매개변수로 들어가게 됩니다. 예시는 다음과 같습니다.
+사용자가 한 말이 그대로 두 번째 매개변수로 들어가게 됩니다. 예시는 다음과 같습니다.
 ```py
 @app.set_extra
-def extra_func(content):
+def extra_func(user_key,content):
 	return kakaobot.Message(text = content)
 ```
 
@@ -232,3 +252,6 @@ def extra_func(content):
 | height | int | Optional | 이미지의 높이입니다. 생략시 630이 적용됩니다. |
 
 [license]: https://img.shields.io/badge/license-MIT-blue.svg
+[Kakaobot.py]: https://github.com/Katinor/kakaobot.py
+[카카오톡 플러스친구 자동응답 API]: https://github.com/plusfriend/auto_reply
+[user_key에 대한 설명]: https://github.com/plusfriend/auto_reply/blob/master/README.md#44-user_key
