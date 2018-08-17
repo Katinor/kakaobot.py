@@ -230,3 +230,5 @@ def extra_func(content):
 | url | string | Require | 이미지를 불어 올 주소입니다. |
 | width | int | Optional | 이미지의 너비입니다. 생략시 720이 적용됩니다. |
 | height | int | Optional | 이미지의 높이입니다. 생략시 630이 적용됩니다. |
+
+[license]: https://img.shields.io/badge/license-MIT-blue.svg
