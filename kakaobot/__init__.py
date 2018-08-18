@@ -45,6 +45,9 @@ class Client:
 		self._prefix_command = {}
 		self._regex_command = {}
 		self._extra = None
+		self._friend_add = None
+		self._friend_delete = None
+		self._room_out = None
 		self.app = Flask(__name__)
 		self._port = port
 		self.error_text = error_text
@@ -89,10 +92,50 @@ class Client:
 			return func(user_id, content)
 		return wrapper_function
 
+	def set_friend_add_event(self,func):
+		self._friend_add = func
+		@wraps(func)
+		def wrapper_function(user_id):
+			return func(user_id)
+		return wrapper_function
+
+	def set_friend_delete_event(self,func):
+		self._friend_delete = func
+		@wraps(func)
+		def wrapper_function(user_id):
+			return func(user_id)
+		return wrapper_function
+
+	def set_chatroom_leave_event(self,func):
+		self._room_out = func
+		@wraps(func)
+		def wrapper_function(user_id):
+			return func(user_id)
+		return wrapper_function
+
 	def run(self):
 		@self.app.route("/keyboard")
 		def _main_set_keyboard():
 			return jsonify(self.kboard.make_dict())
+
+		@self.app.route("/friend")
+		def _friend_add_stream():
+			if self._friend_add:
+				msg_content = request.get_json()
+				self._friend_add(msg_content["user_key"])
+			return abort(200)
+
+		@self.app.route("/friend/<temp_user_key>")
+		def _friend_delete_stream(temp_user_key):
+			if self._friend_delete:
+				self._friend_delete(temp_user_key)
+			return abort(200)
+
+		@self.app.route("/chat_room/<temp_user_key>")
+		def _chatroom_leave_stream(temp_user_key):
+			if self._room_out:
+				self._room_out(temp_user_key)
+			return abort(200)
 
 		@self.app.route("/message", methods = ['POST'])
 		def _main_set_message():
