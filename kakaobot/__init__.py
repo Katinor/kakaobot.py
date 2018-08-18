@@ -15,12 +15,15 @@ __version__ = '0.1'
 import random,json,re
 from functools import wraps
 from flask import Flask, jsonify, render_template, request, abort, redirect, url_for
+import logging
 
 from .resp_param import Resp_param
 from .kboard import Kboard
 from .mbutton import Mbutton
 from .photo import Photo
 from .message import Message
+
+logging.basicConfig(level = logging.ERROR)
 
 class Client:
 	"""
