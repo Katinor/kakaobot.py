@@ -15,7 +15,7 @@ setup(
 	url				= 'https://github.com/Katinor/kakaobot.py',
 	download_url	= 'https://github.com/Katinor/kakaobot.py',
 	install_requires= install_requires,
-	keywords		= ['kakaotalk','chatbot'],
+	keywords		= ['kakaotalk','chatbot','api'],
 	python_requires = '>=3.6',
 	classifiers		= [
 		'Development Status :: 4 - Beta',
