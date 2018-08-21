@@ -10,7 +10,7 @@ __title__ = 'kakaobot.py'
 __author__ = 'Katinor'
 __license__ = 'MIT'
 __copyright__ = 'Copyright 2018 Katinor'
-__version__ = '1.0'
+__version__ = '1.0b'
 
 import random,json,re,os,logging
 from functools import wraps

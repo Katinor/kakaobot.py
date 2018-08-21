@@ -22,7 +22,12 @@ Flask를 통해 구현되어 있습니다.
 
 ## Installation
 
-아직 pypi에는 등록을 안했습니다. 그냥 kakaobot 폴더째로 들고가서 쓰시면 되겠습니다.
+먼저 패키지를 pypi로부터 받습니다.
+```
+pip install kakaobot.py
+```
+
+그다음 `import kakaobot` 으로 불러옵니다.
 
 ## Example
 
