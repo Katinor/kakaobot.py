@@ -18,6 +18,14 @@ setup(
 	keywords		= ['kakaotalk','chatbot'],
 	python_requires = '>=3.6',
 	classifiers		= [
-		'Programming Language :: Python :: 3.6'
-	]
+		'Development Status :: 4 - Beta',
+		'License :: OSI Approved :: MIT License',
+		'Intended Audience :: Developers',
+		'Topic :: Communications :: Chat',
+		'Software Development :: Libraries',
+		'Framework :: Flask',
+		'Natural Language :: Korean',
+		'Programming Language :: Python :: 3 :: Only'
+	],
+	long_description= open('README.md').read(),
 )

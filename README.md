@@ -12,7 +12,8 @@ Flask를 통해 구현되어 있습니다.
 - [Example](#example)
 - [Usage](#usage)
   - [Basic structure](#basic-structure)
-  - [Class](#class)
+  - [Basic Class](#basic-class)
+	- [Kakaobot](#kakaobot)
     - [Client](#client)
 	- [Kboard](#kboard)
 	- [Message](#message)
@@ -73,7 +74,23 @@ def 안녕():
 app.run()
 ```
 
-### Class
+### Basic Class
+
+여기에 있는 객체들은 [카카오톡 플러스친구 자동응답 API] 에서 제공하는 통신수단과 객체들을 추상화한 것으로, 챗봇을 제작하는데 필수적인 요소들입니다.
+
+#### Kakaobot
+
+별도의 객체에 소속되지 않고 모듈에서 자체적으로 제공하는 전역변수 및 함수의 목록입니다.
+
+##### `log_append( chat_id (string), text (string), maintype (string), sudtype (string) )`
+
+이 함수는 필수적인 요소가 아니고 내부에서 사용하는 함수이지만, 별다른 로그 작성 방법을 사용하지 않으신다면 대신 사용하실 수 있도록 문서로 작성해두겠습니다.
+
+이 모듈은 자체적으로 로그를 작성해 이 모듈을 호출한 파일의 디렉토리에 `kakaobot_log` 라는 폴더를 만든 후 저장하게 되어 있습니다. Client 클래스를 선언하고 run으로 작동시키기 까지의 로그가 이 함수로 동작하며, 챗봇 제작시에 이 함수를 호출해 로그를 계속 작성할 수도 있습니다.
+
+로그는 다음과 같은 구조로 작성됩니다.
+
+`[(time)] trgd [<maintype>_<subtype>] from [<chat_id>] : <text>`
 
 #### Client
 
@@ -105,7 +122,7 @@ def 안녕(user_key): # 챗봇이 "안녕" 이라는 말을 들을 경우
 	return kakaobot.Message(text = "반가워") # "반가워" 라고 답합니다.
 ```
 
-##### `add_alias_command()`
+##### `add_alias_command(list[string]))`
 
  - 명령어를 등록하기 위한 데코레이터입니다. 반드시 [Message](#Message) 객체를 반환해야만 합니다.
  - 데코레이터로 전달된 배열의 인자들이 명령어가 됩니다.
@@ -134,9 +151,23 @@ def 따라해(user_key,content):
 이 경우 "따라해"가 채팅의 첫 단어일 때 동작합니다. 그리고 "따라해"를 제외한 내용이 매개변수로 들어옵니다.
 예를 들어 `"따라해 나는 똑똑하다"` 일 경우 따라해가 빠지고 `"나는 똑똑하다"` 가 매개변수로 들어옵니다.
 
-##### `add_regex_command(regex_string)`
+##### `add_alias_prefix_command(list[string])`
 
-`주의 : 아직 테스트하지 않았습니다`
+ - 명령어를 등록하기 위한 데코레이터입니다. 반드시 [Message](#Message) 객체를 반환해야만 합니다.
+ - 데코레이터로 전달된 배열의 인자들이 명령어가 됩니다.
+ - 이 데코레이터로 등록된 함수는 사용자가 `명령어를 첫 어절로 말했을 때` 동작합니다.
+ - 이 데코레이터로 등록된 함수는 `두 개의 매개변수를 필요로 합니다.`
+
+`add_prefix_command()`에 `add_alias_command()`의 방식을 혼합한 데코레이터입니다. 명령어를 함수명으로 쓰기 싫어하실 것 같아서 준비했습니다.
+
+명령어 부분이 잘린 문자열이 두 번째 매개변수로 들어가게 됩니다. 예시는 다음과 같습니다.
+```py
+@app.add_alias_prefix_command(["따라해"])
+def mirror(user_key,content):
+	return kakaobot.Message(text = content)
+```
+
+##### `add_regex_command(regex_string)`
 
  - 명령어를 등록하기 위한 데코레이터입니다. 반드시 [Message](#Message) 객체를 반환해야만 합니다.
  - 데코레이터로 전달된 `정규식 표현`이 명령어가 됩니다.
@@ -165,6 +196,30 @@ def temp_regex_com(user_key,content):
 def extra_func(user_key,content):
 	return kakaobot.Message(text = content)
 ```
+
+##### `set_friend_add_event()`
+
+ - `사용자가 챗봇을 친구로 추가할 경우` 수행되는 함수를 등록하기 위한 데코레이터입니다.
+ - 반환값이 없어도 됩니다.
+ - 이 데코레이터로 등록된 함수는 `하나의 매개변수를 필요로 합니다.`
+
+[카카오톡 플러스친구 자동응답 API] 에서는 친구추가시의 챗봇의 대사를 바꿀 수 없도록 되어 있습니다. **등록된 함수에서 Message 객체를 반환하더라도 챗봇은 그 객체를 전달하지 않습니다.**
+
+##### `set_friend_delete_event()`
+
+ - `사용자가 챗봇을 친구목록에서 제외할 경우` 수행되는 함수를 등록하기 위한 데코레이터입니다.
+ - 반환값이 없어도 됩니다.
+ - 이 데코레이터로 등록된 함수는 `하나의 매개변수를 필요로 합니다.`
+
+[카카오톡 플러스친구 자동응답 API] 에서는 친구삭제시의 챗봇의 대사를 바꿀 수 없도록 되어 있습니다. **등록된 함수에서 Message 객체를 반환하더라도 챗봇은 그 객체를 전달하지 않습니다.**
+
+##### `set_chatroom_leave_event()`
+
+ - `사용자가 챗봇과의 채팅방을 퇴장할 경우` 수행되는 함수를 등록하기 위한 데코레이터입니다.
+ - 반환값이 없어도 됩니다.
+ - 이 데코레이터로 등록된 함수는 `하나의 매개변수를 필요로 합니다.`
+
+[카카오톡 플러스친구 자동응답 API] 에서는 채팅방 퇴장시의 챗봇의 대사를 바꿀 수 없도록 되어 있습니다. **등록된 함수에서 Message 객체를 반환하더라도 챗봇은 그 객체를 전달하지 않습니다.**
 
 ##### `run()`
 
