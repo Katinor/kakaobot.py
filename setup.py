@@ -27,5 +27,4 @@ setup(
 		'Natural Language :: Korean',
 		'Programming Language :: Python :: 3 :: Only'
 	],
-	long_description= open('README.md').read(),
 )
