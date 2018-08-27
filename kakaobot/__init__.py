@@ -187,9 +187,9 @@ class Client:
 							temp_prefix = get_data.content.split(" ")[0]
 							if temp_prefix in self._prefix_command.keys():
 								if self._prefix_command[temp_prefix][1] :
-									target = self._prefix_command[temp_prefix](get_data.user_key,get_data.content)
+									target = self._prefix_command[temp_prefix][0](get_data.user_key,get_data.content)
 								else :
-									target = self._prefix_command[temp_prefix](get_data.user_key,get_data.content[len(temp_prefix)+1:])
+									target = self._prefix_command[temp_prefix][0](get_data.user_key,get_data.content[len(temp_prefix)+1:])
 								break
 						if self._regex_command:
 							swt = False

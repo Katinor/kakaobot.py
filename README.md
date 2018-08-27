@@ -57,7 +57,7 @@ import kakaobot
 
 app = kakaobot.Client(port = 7900)
 
-@app.add_command
+@app.add_command()
 def 안녕():
 	return kakaobot.Message(text = "반가워")
 
@@ -72,7 +72,7 @@ import kakaobot
 init_kb = kakaobot.Kboard(button = ["안녕"])
 app = kakaobot.Client(port = 7900, kboard = init_kb)
 
-@app.add_command
+@app.add_command()
 def 안녕():
 	return kakaobot.Message(text = "반가워")
 
@@ -122,7 +122,7 @@ kakaobot.py는 Client를 선언하고 Client.run()을 통해 챗봇을 활성화
  - 이 데코레이터로 등록된 함수는 `하나의 매개변수를 필요로 합니다.`
 
 ```py
-@app.add_command
+@app.add_command()
 def 안녕(user_key): # 챗봇이 "안녕" 이라는 말을 들을 경우
 	return kakaobot.Message(text = "반가워") # "반가워" 라고 답합니다.
 
@@ -141,7 +141,7 @@ def greeting(user_key):
 
 preserve_prefix가 기본값인 False일 경우, 명령어 부분이 잘린 문자열이 두 번째 매개변수로 들어가게 됩니다. 예시는 다음과 같습니다.
 ```py
-@app.add_prefix_command
+@app.add_prefix_command()
 def 따라해(user_key,content):
 	return kakaobot.Message(text = content)
 ```
