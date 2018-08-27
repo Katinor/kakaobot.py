@@ -6,7 +6,7 @@ install_requires = [
 
 setup(
     name			= 'kakaobot.py',
-    version			= '1.0r',
+    version			= 'bb20180827',
     description		= 'API wrapper for Kakaotalk written in Python.',
     author			= 'Katinor',
     author_email	= 'katinor@4ears.net',
@@ -18,7 +18,7 @@ setup(
 	keywords		= ['kakaotalk','chatbot','api'],
 	python_requires = '>=3',
 	classifiers		= [
-		'Development Status :: 5 - Production/Stable',
+		'Development Status :: 4 - Beta',
 		'License :: OSI Approved :: MIT License',
 		'Intended Audience :: Developers',
 		'Topic :: Communications :: Chat',

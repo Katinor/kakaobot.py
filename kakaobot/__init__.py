@@ -55,21 +55,17 @@ class Client:
 		self.error_text = error_text
 		log_append("Kakaobot","Success to construct","SYS","init")
 
-	def add_command(self,func):
-		log_append("Kakaobot","add regular command : "+func.__name__+" in "+str(func),"SYS","event")
-		self._command[func.__name__] = func
-		@wraps(func)
-		def wrapper_function(user_id):
-			return func(user_id)
-		return wrapper_function
-	
-	def add_alias_command(self,command_list):
+	def add_command(self,command_list = []):
 		def _al_command(func):
-			log_append("Kakaobot","add alias command : "+func.__name__+" in "+str(func),"SYS","event")
+			log_append("Kakaobot","add regular command : "+func.__name__+" in "+str(func),"SYS","event")
 			temp_text = ""
-			for i in command_list:
-				self._command[i] = func
-				temp_text += i + ", " 
+			if command_list == []:
+				self._command[func.__name__] = func
+				temp_text += func.__name__
+			else:
+				for i in command_list:
+					self._command[i] = func
+					temp_text += i + ", " 
 			log_append("Kakaobot","alias list of "+func.__name__+" : "+temp_text,"SYS","event")
 			@wraps(func)
 			def wrapper_function(user_id):
@@ -77,21 +73,28 @@ class Client:
 			return wrapper_function
 		return _al_command
 	
-	def add_prefix_command(self,func):
-		log_append("Kakaobot","add prefix command : "+func.__name__+" in "+str(func),"SYS","event")
-		self._prefix_command[func.__name__] = func
-		@wraps(func)
-		def wrapper_function(user_id, content):
-			return func(user_id, content)
-		return wrapper_function
-
-	def add_alias_prefix_command(self,command_list):
+	def add_prefix_command(self,command_list = [], preserve_prefix = False):
 		def _al_prcom(func):
-			log_append("Kakaobot","add alias prefix command : "+func.__name__+" in "+str(func),"SYS","event")
-			temp_text = ""
-			for i in command_list:
-				self._prefix_command[i] = func
-				temp_text += i + ", "
+			if preserve_prefix:
+				log_append("Kakaobot","add prefix command : "+func.__name__+" in "+str(func)+" with preserve_prefix","SYS","event")
+				temp_text = ""
+				if command_list == []:
+					self._prefix_command[func.__name__] = (func , True)
+					temp_text += func.__name__
+				else:
+					for i in command_list:
+						self._prefix_command[i] = (func , True)
+						temp_text += i + ", "
+			else:
+				log_append("Kakaobot","add prefix command : "+func.__name__+" in "+str(func),"SYS","event")
+				temp_text = ""
+				if command_list == []:
+					self._prefix_command[func.__name__] = (func , False)
+					temp_text += func.__name__
+				else:
+					for i in command_list:
+						self._prefix_command[i] = (func , False)
+						temp_text += i + ", "
 			log_append("Kakaobot","alias list of "+func.__name__+" : "+temp_text,"SYS","event")
 			@wraps(func)
 			def wrapper_function(user_id, content):
@@ -183,7 +186,10 @@ class Client:
 						if self._prefix_command:
 							temp_prefix = get_data.content.split(" ")[0]
 							if temp_prefix in self._prefix_command.keys():
-								target = self._prefix_command[temp_prefix](get_data.user_key,get_data.content[len(temp_prefix)+1:])
+								if self._prefix_command[temp_prefix][1] :
+									target = self._prefix_command[temp_prefix](get_data.user_key,get_data.content)
+								else :
+									target = self._prefix_command[temp_prefix](get_data.user_key,get_data.content[len(temp_prefix)+1:])
 								break
 						if self._regex_command:
 							swt = False

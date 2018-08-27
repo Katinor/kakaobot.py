@@ -37,7 +37,7 @@ class Message():
 			}
 		}
 		if self.text: target["message"]["text"] = self.text
-		if self.photo: target["message"]["photo"] = self.photo
-		if self.message_button: target["message"]["message_button"] = self.message_button
-		if self.keyboard : target["keyboard"] = self.keyboard
+		if self.photo: target["message"]["photo"] = self.photo.make_dict()
+		if self.message_button: target["message"]["message_button"] = self.message_button.make_dict()
+		if self.keyboard : target["keyboard"] = self.keyboard.make_dict()
 		return target
