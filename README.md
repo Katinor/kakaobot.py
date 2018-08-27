@@ -57,7 +57,7 @@ import kakaobot
 
 app = kakaobot.Client(port = 7900)
 
-@app.add_command
+@app.add_command()
 def 안녕():
 	return kakaobot.Message(text = "반가워")
 
@@ -72,7 +72,7 @@ import kakaobot
 init_kb = kakaobot.Kboard(button = ["안녕"])
 app = kakaobot.Client(port = 7900, kboard = init_kb)
 
-@app.add_command
+@app.add_command()
 def 안녕():
 	return kakaobot.Message(text = "반가워")
 
@@ -114,63 +114,48 @@ kakaobot.py는 Client를 선언하고 Client.run()을 통해 챗봇을 활성화
 그 함수에 전달되는 매개변수중 첫번째는 언제나 `사용자의 고유 토큰값` 이며, 나머지는 함수 소개부분에 설명해두었습니다.
 `사용자의 고유 토큰값`은 주식회사 카카오 측에서 제공하는 정보입니다. 같은 사용자라도 다른 플러스친구라면 값이 달라지기 때문에, 토큰값이 이전의 사용자와 동일인임을 보장할 수는 있지만, 개인으로 특정하는데 사용할 수는 없습니다. [user_key에 대한 설명]을 확인하세요.
 
-##### `add_command()`
+##### `add_command(command_list)`
 
  - 명령어를 등록하기 위한 데코레이터입니다. 반드시 [Message](#Message) 객체를 반환해야만 합니다.
- - 데코레이터의 대상이 되는 `함수의 이름`이 명령어가 됩니다.
+ - `command_list`에 전달된 `배열의 인자`들이 명령어가 됩니다. 생략하면 대상이 되는 `함수의 이름`이 명령어가 됩니다.
  - 이 데코레이터로 등록된 함수는 사용자가 `명령어를 정확히 말했을 때` 동작합니다.
  - 이 데코레이터로 등록된 함수는 `하나의 매개변수를 필요로 합니다.`
 
 ```py
-@app.add_command
+@app.add_command()
 def 안녕(user_key): # 챗봇이 "안녕" 이라는 말을 들을 경우
 	return kakaobot.Message(text = "반가워") # "반가워" 라고 답합니다.
-```
 
-##### `add_alias_command(list[string]))`
-
- - 명령어를 등록하기 위한 데코레이터입니다. 반드시 [Message](#Message) 객체를 반환해야만 합니다.
- - 데코레이터로 전달된 배열의 인자들이 명령어가 됩니다.
- - 이 데코레이터로 등록된 함수는 사용자가 `명령어중 하나를 정확히 말했을 때` 동작합니다.
- - 이 데코레이터로 등록된 함수는 `하나의 매개변수를 필요로 합니다.`
-
-```py
-@app.add_alias_command(["안녕","반가워"])
+@app.add_command(["안녕","반가워"])
 def greeting(user_key):
 	return kakaobot.Message(text = "나도 반가워!")
 ```
 
-##### `add_prefix_command()`
+##### `add_prefix_command(command_list, preserve_prefix)`
 
  - 명령어를 등록하기 위한 데코레이터입니다. 반드시 [Message](#Message) 객체를 반환해야만 합니다.
- - 데코레이터의 대상이 되는 `함수의 이름`이 명령어가 됩니다.
+ - `command_list`에 전달된 `배열의 인자`들이 명령어가 됩니다. 배열이 없으면 대상이 되는 `함수의 이름`이 명령어가 됩니다.
+ - `preserve_prefix`를 생략하면 기본값인 False가 들어갑니다.
  - 이 데코레이터로 등록된 함수는 사용자가 `명령어를 첫 어절로 말했을 때` 동작합니다.
  - 이 데코레이터로 등록된 함수는 `두 개의 매개변수를 필요로 합니다.`
 
-명령어 부분이 잘린 문자열이 두 번째 매개변수로 들어가게 됩니다. 예시는 다음과 같습니다.
+preserve_prefix가 기본값인 False일 경우, 명령어 부분이 잘린 문자열이 두 번째 매개변수로 들어가게 됩니다. 예시는 다음과 같습니다.
 ```py
-@app.add_prefix_command
+@app.add_prefix_command()
 def 따라해(user_key,content):
 	return kakaobot.Message(text = content)
 ```
 이 경우 "따라해"가 채팅의 첫 단어일 때 동작합니다. 그리고 "따라해"를 제외한 내용이 매개변수로 들어옵니다.
 예를 들어 `"따라해 나는 똑똑하다"` 일 경우 따라해가 빠지고 `"나는 똑똑하다"` 가 매개변수로 들어옵니다.
 
-##### `add_alias_prefix_command(list[string])`
-
- - 명령어를 등록하기 위한 데코레이터입니다. 반드시 [Message](#Message) 객체를 반환해야만 합니다.
- - 데코레이터로 전달된 배열의 인자들이 명령어가 됩니다.
- - 이 데코레이터로 등록된 함수는 사용자가 `명령어를 첫 어절로 말했을 때` 동작합니다.
- - 이 데코레이터로 등록된 함수는 `두 개의 매개변수를 필요로 합니다.`
-
-`add_prefix_command()`에 `add_alias_command()`의 방식을 혼합한 데코레이터입니다. 명령어를 함수명으로 쓰기 싫어하실 것 같아서 준비했습니다.
-
-명령어 부분이 잘린 문자열이 두 번째 매개변수로 들어가게 됩니다. 예시는 다음과 같습니다.
+반대로 preserve_prefix가 True라면 두 번째 매개변수에 모든 내용이 들어갑니다.
 ```py
-@app.add_alias_prefix_command(["따라해"])
-def mirror(user_key,content):
+@app.add_prefix_command(preserve_prefix = True)
+def 따라해(user_key,content):
 	return kakaobot.Message(text = content)
 ```
+이 경우 "따라해"가 채팅의 첫 단어일 때 동작합니다.
+예를 들어 `"따라해 나는 똑똑하다"` 일 경우 `"따라해 나는 똑똑하다"` 가 매개변수로 들어옵니다.
 
 ##### `add_regex_command(regex_string)`
 
