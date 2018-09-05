@@ -106,7 +106,7 @@ kakaobot.py는 Client를 선언하고 Client.run()을 통해 챗봇을 활성화
 | ---- | ---- | -------- | ----------- |
 | port | int | Optional | 카카오톡 플러스친구 API와 통신할 웹서버의 포트번호입니다. 생략시 Flask의 기본 포트번호인 5000이 적용됩니다. |
 | kboard | [Kboard](#Kboard) | Optional | 챗봇 사용자가 처음으로 이 챗봇의 채팅방에 들어올 때 적용되는 Kboard입니다. 생략시 빈 Kboard 가 적용됩니다. |
-| kboard | [Message](#message) | Optional | 사용자가 챗봇에게 전달한 메시지가 커맨드에 등록되어있지 않고, 별도의 처리가 없을 경우 사용자에게 전달되는 메시지입니다. 생략시 "Error occured" 라고 챗봇이 말합니다. |
+| error_text | [Message](#message) | Optional | 사용자가 챗봇에게 전달한 메시지가 등록된 명령어들을 어느것도 만족하지 않을 경우 사용자에게 전달되는 메시지입니다. 생략시 "Error occured" 라고 챗봇이 말합니다.<br>set_extra()로 등록된 함수가 있다면 이 메시지가 전달되지 않습니다. (다른 데코레이터로 등록된 명령어들을 만족하는 메세지를 제외한 모든 메세지가 그 함수를 명령어처럼 발동시키기 때문입니다.)  |
 
 ##### `명령어 등록시의 주의점`
 
@@ -229,7 +229,7 @@ def extra_func(user_key,content):
 
 | 매개변수 | 타입 | 필수여부 | 설명 |
 | ---- | ---- | -------- | ----------- |
-| button | string | Require | 추가할 객관식 응답입니다. |
+| button | string | Required | 추가할 객관식 응답입니다. |
 
 #### Message
 
@@ -249,7 +249,7 @@ def extra_func(user_key,content):
 
 | 매개변수 | 타입 | 필수여부 | 설명 |
 | ---- | ---- | -------- | ----------- |
-| text | string | Require | 교체할 텍스트 입니다. |
+| text | string | Required | 교체할 텍스트 입니다. |
 
 ##### `set_photo(photo)`
 
@@ -257,7 +257,7 @@ def extra_func(user_key,content):
 
 | 매개변수 | 타입 | 필수여부 | 설명 |
 | ---- | ---- | -------- | ----------- |
-| text | [Photo](#Photo) | Require | 교체할 Photo 객체입니다. |
+| text | [Photo](#Photo) | Required | 교체할 Photo 객체입니다. |
 
 ##### `set_button(message_button)`
 
@@ -265,7 +265,7 @@ def extra_func(user_key,content):
 
 | 매개변수 | 타입 | 필수여부 | 설명 |
 | ---- | ---- | -------- | ----------- |
-| text | [Mbutton](#Mbutton) | Require | 교체할 Mbutton 객체입니다. |
+| text | [Mbutton](#Mbutton) | Required | 교체할 Mbutton 객체입니다. |
 
 
 ##### `set_keyboard(keyboard)`
@@ -274,7 +274,7 @@ def extra_func(user_key,content):
 
 | 매개변수 | 타입 | 필수여부 | 설명 |
 | ---- | ---- | -------- | ----------- |
-| text | [Kboard](#Kboard) | Require | 교체할 Kboard 객체입니다. |
+| text | [Kboard](#Kboard) | Required | 교체할 Kboard 객체입니다. |
 
 #### Mbutton
 
@@ -282,8 +282,8 @@ def extra_func(user_key,content):
 
 | 매개변수 | 타입 | 필수여부 | 설명 |
 | ---- | ---- | -------- | ----------- |
-| label | string | Require | 링크버튼의 타이틀입니다. |
-| url | string | Require | 버튼을 누를 경우 연결되는 주소입니다. |
+| label | string | Required | 링크버튼의 타이틀입니다. |
+| url | string | Required | 버튼을 누를 경우 연결되는 주소입니다. |
 
 #### Photo
 
@@ -293,7 +293,7 @@ def extra_func(user_key,content):
 
 | 매개변수 | 타입 | 필수여부 | 설명 |
 | ---- | ---- | -------- | ----------- |
-| url | string | Require | 이미지를 불어 올 주소입니다. |
+| url | string | Required | 이미지를 불어 올 주소입니다. |
 | width | int | Optional | 이미지의 너비입니다. 생략시 720이 적용됩니다. |
 | height | int | Optional | 이미지의 높이입니다. 생략시 630이 적용됩니다. |
 
