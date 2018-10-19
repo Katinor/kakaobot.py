@@ -6,6 +6,8 @@
 <b>[Kakaobot.py]</b>는 [카카오톡 플러스친구 자동응답 API]를 더 쉽게 사용할 수 있도록 도와주는 라이브러리입니다.
 Flask를 통해 구현되어 있습니다.
 
+[플러스친구팀]의 공지에 따르면 API형 스마트채팅에 대한 지원이 2019년 12월 31에 종료되며, 2018년 11월 30일 이후에는 API형 스마트채팅에 대한 신규등록을 금지하게 됩니다. 이에 따라 본 프로젝트는 여기서 종결합니다. 버그수정 등의 유지보수에 대한 이슈는 계속해서 받습니다.
+
 **Table of Contents**
 
 - [Installation](#installation)
@@ -300,4 +302,5 @@ def extra_func(user_key,content):
 [license]: https://img.shields.io/badge/license-MIT-blue.svg
 [Kakaobot.py]: https://github.com/Katinor/kakaobot.py
 [카카오톡 플러스친구 자동응답 API]: https://github.com/plusfriend/auto_reply
+[플러스친구팀]: https://center-pf.kakao.com/m/notices/233
 [user_key에 대한 설명]: https://github.com/plusfriend/auto_reply/blob/master/README.md#44-user_key
